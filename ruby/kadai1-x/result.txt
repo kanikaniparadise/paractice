@@ -1,0 +1,3 @@
+#<OpenStruct month=202012, kingaku=5000, taxi=5000>
+#<OpenStruct month=202004, kingaku=3000, book=3000>
+#<OpenStruct taxi=5000, book=3000>
