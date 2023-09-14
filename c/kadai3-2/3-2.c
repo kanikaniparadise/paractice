@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<math.h>
-int main(){
-	int want;
-	scanf("%d",&want);
+#include<stdlib.h>
+int main(int argc,char **argv){
+	int want = atoi(argv[1]);
 	int n=2;
 	int yakusuu=0;
 	for(int i=0;i<want;n++){

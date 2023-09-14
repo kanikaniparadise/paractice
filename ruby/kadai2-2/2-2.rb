@@ -10,8 +10,7 @@ def search(want)
         month = File.basename(file)[0,2]
         File.open(file){|f|
           f.each_line{|line|
-            each_month[(month.to_i)-1].push(line.split(",")[want].to_i)
-            n[month.to_i-1]+=line.split(",")[want].to_i
+            each_month[(month.to_i)-1].push(line.split(",")[want].to_i) unless line.split(",")[want].to_i == 9999
           }
         }
       }
@@ -37,8 +36,11 @@ def search(want)
         printf("min = ")
         puts(each_month[i][0])
         printf("med = ")
-        puts 2
-        puts(n[i])
+        if(m_length % 2==0) then
+          puts((each_month[i][m_length/2]+each_month[i][(m_length/2)+1])/2)
+        else
+          puts(each_month[i][m_length/2])
+        end
       }
     end
   }
