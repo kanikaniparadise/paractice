@@ -12,16 +12,18 @@ int main(){
 	int j;
 	int sqn;
 	int flag;
+	int count;
 	for(int i=1;i<1000000;n+=2){		//-----任意の回数回繰り返して任意の個数目の素数を持ってくる
-		
+	  count = 1;
 		sqn=sqrtf(n);
 		for(j=0; prime_list[j]<=sqn;j++){
-			if(n%prime_list[j]==0){
+		  if(n%prime_list[j]==0){
+		    count = 0;
 				break;
 			
 			}
 		}
-		if(n%prime_list[j]!=0){
+		if(count == 1){
 			prime_list[i]=n;
 			i++;
 			

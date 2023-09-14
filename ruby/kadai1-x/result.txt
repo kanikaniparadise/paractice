@@ -1,3 +1,19 @@
-#<OpenStruct month=202012, kingaku=5000, taxi=5000>
-#<OpenStruct month=202004, kingaku=3000, book=3000>
-#<OpenStruct taxi=5000, book=3000>
+2020年12月の合計金額は5000円
+その内訳は
+taxi: 5000円
+2020年04月の合計金額は23654円
+その内訳は
+book: 3200円
+kosai: 5000円
+uni: 5000円
+kani: 5454円
+taxi: 5000円
+2020年05月の合計金額は400円
+その内訳は
+taxi: 400円
+
+taxiの合計金額は10400円
+bookの合計金額は3200円
+kosaiの合計金額は5000円
+uniの合計金額は5000円
+kaniの合計金額は5454円

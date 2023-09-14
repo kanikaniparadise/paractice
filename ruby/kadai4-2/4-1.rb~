@@ -9,13 +9,15 @@ end
 
 File.open("4-2-2.txt" , "w"){|f|
   0.step(1,1.0/19.0){|x|
+    puts x
     f.puts(x.to_s+" "+sig(x).to_s)
   }
 }
 
 File.open("4-2-1.txt" , "w"){|f|
   0.step(1,1.0/19.0){|x|
+    puts x
     f.puts(x.to_s+" "+withcos(x).to_s)
   }
 }
-system('gnuplot 4-2.plt')
+system('./4-2.plt')

@@ -12,11 +12,9 @@ File.open(file_name){|f|
 	f.each_line{|line|
 		if (!(line[0]=="#"))
 			value = line.split
-			
 			start = Time.parse(value[1])
 			fin = Time.parse(value[2])
 			worktime+=fin-start
-			
 		end
 	}
 }
