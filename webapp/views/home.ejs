@@ -17,7 +17,7 @@
 }
 </script>
   <body>
-    <form action="/" method="POST">
+    <form action="/send_kinmu" method="POST">
       <h2>ユーザ名</h2>
       <input type="text" name="username">
       <h2>年/月/日</h2>
@@ -30,6 +30,9 @@
       <input type="text" name="coment">
       <button type="submit">投稿</button>
     </form>
+    <form action="/delcookie" method="GET">
+    <button type="submit">ログアウト</button>
+    </form>
     <h1 >---投稿履歴---</h1>
     <table border="1"id="rireki">
       <tr>
@@ -41,8 +44,10 @@
       </tr>
   </body>
   <script>
-    xhr.open("GET","/send_kinmu")
+  var xhr = new XMLHttpRequest();
+    xhr.open("GET","/get_kinmu")
     var out=[]
+    xhr.send()
     xhr.addEventListener("load", function(){ // loadイベントを登録します。
 	console.log(this.response); // 通信結果を出力します。
 	console.log("myname")
