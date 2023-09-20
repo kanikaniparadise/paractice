@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<script>
+	function encode( data )
+{
+    var params = [];
+
+    for( var name in data )
+    {
+        var value = data[ name ];
+        var param = encodeURIComponent( name ) + '=' + encodeURIComponent( value );
+
+        params.push( param );
+    }
+
+    return params.join( '&' ).replace( /%20/g, '+' );
+}
+</script>
+  <body>
+    <form action="/" method="POST">
+      <h2>ユーザ名</h2>
+      <input type="text" name="username">
+      <h2>年/月/日</h2>
+      <input type="text" name="day">
+      <h2>出社時刻</h2>
+      <input type="text" name="start">
+      <h2>退社時刻</h2>
+      <input type="text" name="fin">
+      <h2>コメント</h2>
+      <input type="text" name="coment">
+      <button type="submit">投稿</button>
+    </form>
+    <h1 >---投稿履歴---</h1>
+    <table border="1"id="rireki">
+      <tr>
+	<th>名前</th>
+	<th>日付</th>
+	<th>出社時間</th>
+	<th>退社時間</th>
+	<th>コメント</th>
+      </tr>
+  </body>
+  <script>
+    xhr.open("GET","/send_kinmu")
+    var out=[]
+    xhr.addEventListener("load", function(){ // loadイベントを登録します。
+	console.log(this.response); // 通信結果を出力します。
+	console.log("myname")
+	let rirekistart = document.getElementById('rireki');
+	gyougoto = this.response.split("\n");
+	out = this.response;
+	var i = 0;
+	gyougoto.pop();
+	gyougoto.forEach(function(gyou){
+	    var new_element = document.createElement('tr');
+    	    i++;
+    	    values = gyou.split(",");
+    	    values.forEach(function(value){
+    		var valuer = document.createElement('td');
+    		valuer.textContent = value;
+		new_element.appendChild ( valuer);
+	    })
+    	    rirekistart.appendChild(new_element);
+	})
+    }, false);
+    console.log ("hello")
+  </script>
+</html>
