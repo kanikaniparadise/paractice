@@ -1,10 +1,13 @@
 /* 1. expressモジュールをロードし、インスタンス化してappに代入。*/
 var express = require("express");
+const crypto = require('crypto')//md5ハッシュ化の前提
+
 const fs=require("fs");
 var app = express();
-var jwt = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');//tokenの発行関係
 app.use(express.urlencoded({extended:true}))
 var cookies = require("cookie-parser");
+const bcrypt = require('bcrypt');
 app.use(cookies());
 
 /* 2. listen()メソッドを実行して3000番ポートで待ち受け。*/
@@ -12,36 +15,65 @@ var server = app.listen(3000, function(){
     console.log("Node.js is listening to PORT:" + server.address().port);
 });
 
-/* 3. 以後、アプリケーション固有の処理 */
 
-// View EngineにEJSを指定。
-app.set('view engine', 'ejs');
 
-// "/"へのGETリクエストでindex.ejsを表示する。トークンがあればそのトークンを確認、homeに遷移する
-app.get("/", function(req, res, next){		//パスワード確認ページを表示する処理
+//クッキーからtoken を持って来てあってるか確かめる関数
+function check_token (cookie){
+    if (cookie.token==null){return false};
+    token=cookie.token;
     var tokenlist=[]
     var namelist=[]
+    var tokenok=0;
+    var token_value = jwt.verify(token, 'my_secret');
     var text = fs.readFileSync("./name_token.txt","utf-8");
     text = text.split("\n");
     text.forEach(function(gyou){
 	sliced = gyou.split(",");
 	namelist.push(sliced[0])
 	tokenlist.push(sliced[1])
-    })
+    }) 
+    console.log(token);
+    console.log(namelist)
+    num = tokenlist.lastIndexOf(token);
+    if(num!=-1 && namelist[num]==token_value.username){
+    	return true
+    }
+    else{
+    	return false;
+    }
+}
+//md5にハッシュ化する関数
+function to_md5(text){
+	const md5 = crypto.createHash('md5')
+	return md5.update(text).digest('hex')
+}
+// View EngineにEJSを指定。
+app.set('view engine', 'ejs');
+//新規登録
+app.get("/newaccount",function(req,res,next){
+    res.render("newaccount",{})
+})
+app.post("/newaccount",function(req,res,next){
+	var form = req.body;
+	var output = [];
+	output  = [form.username,to_md5(form.userpass)]
+	fs.appendFileSync( "name_pass.txt" , output+"\n")
+    res.render("madeaccount",{})
+    
+})
+
+// "/"へのGETリクエストでindex.ejsを表示する。トークンがあればそのトークンを確認、homeに遷移する
+app.get("/", function(req, res, next){		//パスワード確認ページを表示する処理
+    
+    
+
     const cookies = req.cookies;
     var tokenok=0
-    if(cookies.token!=null){
-	var token = jwt.verify(cookies.token, 'my_secret');
-	console.log(token);
-	console.log(namelist)
-	num = namelist.lastIndexOf(token.username);
-	if(num!=-1 && tokenlist[num]==cookies.token){
-	    tokenok=1
-    	    res.render("home",{});
-    	}
+    if(check_token(cookies)){
+    	res.render("home", {});
     }
-    if(tokenok==0){
-    	res.render("index", {});
+    else{
+	res.render("index",{});
     }
 });
 app.get("/get_kinmu", function(req, res, next){		//勤務表のデータを送る
@@ -61,7 +93,7 @@ app.post("/", function(req, res, next){		//送られてきたパスワードと�
     })
     var number=namelist.indexOf(req.body.username)
     if (number !=-1){
-	if(passlist[number]==req.body.userpass){
+	if(passlist[number]==to_md5(req.body.userpass)){
 	    const token = jwt.sign({ username: req.body.username}, 'my_secret', { expiresIn: '1h' });
     	    res.cookie("token",token)			//cookieにtokenを渡す
 	    res.render("home", {});
@@ -75,34 +107,48 @@ app.post("/", function(req, res, next){		//送られてきたパスワードと�
     }
 });
 
+//		ログアウト
+
 app.get("/delcookie",(req,res)=>{
-	res.clearCookie("token")
-	var tokenlist=[]
-	var text = fs.readFileSync("./name_token.txt","utf-8");
+    res.clearCookie("token")
+    var tokenlist=[]
+    var text = fs.readFileSync("./name_token.txt","utf-8");
     text = text.split("\n");
     text.forEach(function(gyou){
 	sliced = gyou.split(",");
 	tokenlist.push(sliced[1])
     })
     num=tokenlist.indexOf(req.cookies.token);
+    console.log(text)
     text.splice(num,1);
+    console.log(text);
+    text = text.map(function(a){
+  return a+"\n";
+});
+text.splice(text.length-1,1)
     fs.writeFileSync("name_token.txt", text);
     res.send("<a href='../'>ログイン画面へ行く</a>")
 })
 
 
 app.post('/send_kinmu', (req, res) => {		//送られてきた勤務の情報をテキストに書き込み、リロードさせる
-    var form = req.body;
-    var output = [];
-    output  = [form.username,form.day,form.start,form.fin,form.coment]
-    var nozomi=req.body.username;
-    fs.appendFileSync( "output.txt" , output+"\n")
-    res.render("home",{});
+    if(check_token(req.cookies)){
+	var form = req.body;
+	var output = [];
+	output  = [form.username,form.day,form.start,form.fin,form.coment]
+	var nozomi=req.body.username;
+	fs.appendFileSync( "output.txt" , output+"\n")
+	res.render("home",{});
+    }
+    else{
+	res.render("error",{});
+    }
+    
 })
 
 
 
 app.use(function(req, res, next){
     res.status(404);
-    res.send("<html><h1>存在しないURLか不正なアクセス方法です</h1><br><h2><a href = '../../../../'>ホームへ戻る</a></h2></html>");
+    res.render("error",{});
 })

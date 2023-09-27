@@ -1,0 +1,2 @@
+curl -X POST -d "username=nozomi&userpass=nozo" -c cookie.txt http://localhost:3000/
+

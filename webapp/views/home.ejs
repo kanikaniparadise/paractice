@@ -1,31 +1,17 @@
 <!DOCTYPE html>
 <html>
 <script>
-	function encode( data )
-{
-    var params = [];
-
-    for( var name in data )
-    {
-        var value = data[ name ];
-        var param = encodeURIComponent( name ) + '=' + encodeURIComponent( value );
-
-        params.push( param );
-    }
-
-    return params.join( '&' ).replace( /%20/g, '+' );
-}
 </script>
   <body>
     <form action="/send_kinmu" method="POST">
       <h2>ユーザ名</h2>
       <input type="text" name="username">
       <h2>年/月/日</h2>
-      <input type="text" name="day">
+      <input type="date" name="day">
       <h2>出社時刻</h2>
-      <input type="text" name="start">
+      <input type="time" name="start">
       <h2>退社時刻</h2>
-      <input type="text" name="fin">
+      <input type="time" name="fin">
       <h2>コメント</h2>
       <input type="text" name="coment">
       <button type="submit">投稿</button>
