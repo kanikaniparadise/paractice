@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # coding: utf-8
-file_name = "kinmu_okazaki2023_08Aug.txt"
+file_name = "kinmu_suzuki2023_09sep_txt.txt"
 name=file_name.split("_")
 name[1].slice!(-4,4)
 name = name[1]

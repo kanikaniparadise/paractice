@@ -21,15 +21,15 @@ const mysql = require('mysql');
 const con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'mysql',
 });
 
 con.connect(function (err) {
-  if (err) throw err;
+  if (err) throw new Error(err);
   console.log('Connected');
-  const sql = 'select * from suzukitest.nozomi';
+  const sql = 'select * from webapp.name_pass';
   con.query(sql, function (err, result, fields) {
-    if (err) throw err;
+    if (err) {throw err;}	
     console.log(result);
   });
 });
@@ -72,11 +72,23 @@ app.set('view engine', 'ejs');
 app.get("/newaccount",function(req,res,next){
     res.render("newaccount",{})
 })
+
+
+
 app.post("/newaccount",function(req,res,next){
+
 	var form = req.body;
 	var output = [];
-	output  = [form.username,to_md5(form.userpass)]
-	fs.appendFileSync( "name_pass.txt" , output+"\n")
+	const sql = 'insert into webapp.name_pass set ?';
+	console.log (form)
+	output  = {name : form.name,pass : to_md5(form.pass)}
+	console.log(output)
+  con.query(sql,output, function (err, result, fields) {
+    	
+    console.log(err);
+  });
+  
+	
     res.render("madeaccount",{})
     
 })
@@ -110,6 +122,11 @@ app.post("/", function(req, res, next){		//送られてきたパスワードと�
 	namelist.push(sliced[0])
 	passlist.push(sliced[1])
     })
+     const sql = 'select * from webapp.name_pass where ?';
+  con.query(sql, function (err, result, fields) {
+    if (err) {throw err;}	
+    console.log(result);
+  });
     var number=namelist.indexOf(req.body.username)
     if (number !=-1){
 	if(passlist[number]==to_md5(req.body.userpass)){
