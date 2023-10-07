@@ -15,6 +15,25 @@ var server = app.listen(3000, function(){
     console.log("Node.js is listening to PORT:" + server.address().port);
 });
 
+//mysqlとの接続関係
+const mysql = require('mysql');
+
+const con = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+});
+
+con.connect(function (err) {
+  if (err) throw err;
+  console.log('Connected');
+  const sql = 'select * from suzukitest.nozomi';
+  con.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+  });
+});
+
 
 
 //クッキーからtoken を持って来てあってるか確かめる関数

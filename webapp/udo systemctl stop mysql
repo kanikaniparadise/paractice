@@ -1,0 +1,14 @@
+[0;1;32m●[0m mysql.service - MySQL Community Server
+     Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+     Active: [0;1;32mactive (running)[0m since Wed 2023-09-27 19:31:05 JST; 11s ago
+    Process: 18561 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+   Main PID: 18570 (mysqld)
+     Status: "Server is operational"
+      Tasks: 38 (limit: 18954)
+     Memory: 365.2M
+        CPU: 1.040s
+     CGroup: /system.slice/mysql.service
+             └─18570 /usr/sbin/mysqld
+
+ 9月 27 19:31:04 nuc02 systemd[1]: Starting MySQL Community Server...
+ 9月 27 19:31:05 nuc02 systemd[1]: Started MySQL Community Server.
