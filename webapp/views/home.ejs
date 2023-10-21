@@ -30,29 +30,37 @@
       </tr>
   </body>
   <script>
+    var show;
   var xhr = new XMLHttpRequest();
     xhr.open("GET","/get_kinmu")
     var out=[]
     xhr.send()
     xhr.addEventListener("load", function(){ // loadイベントを登録します。
 	console.log(this.response); // 通信結果を出力します。
-	console.log("myname")
+	console.log(JSON.parse(this.response).length)
+	var data=JSON.parse(this.response)
+	console.log("myname");
+	show=data
 	let rirekistart = document.getElementById('rireki');
 	gyougoto = this.response.split("\n");
 	out = this.response;
 	var i = 0;
+	var datalist=["name","date","intime","outtime","comment"];
 	gyougoto.pop();
-	gyougoto.forEach(function(gyou){
-	    var new_element = document.createElement('tr');
-    	    i++;
-    	    values = gyou.split(",");
-    	    values.forEach(function(value){
-    		var valuer = document.createElement('td');
-    		valuer.textContent = value;
-		new_element.appendChild ( valuer);
+	data.forEach(function(shift){
+	    show = shift
+	    var new_element = document.createElement("tr");
+	    datalist.forEach(function(value){
+		var valuele = document.createElement("td");
+		valuele.textContent = shift[value];
+		//console.log(shift[value])
+		console.log(valuele)
+		new_element.appendChild(valuele);
+		i++;
 	    })
-    	    rirekistart.appendChild(new_element);
+	    rirekistart.appendChild(new_element);
 	})
+
     }, false);
     console.log ("hello")
   </script>

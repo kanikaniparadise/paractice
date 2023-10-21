@@ -1,0 +1,9 @@
+drop table name_token;
+drop table name_pass;
+
+create table name_token(
+	name text not null,
+	token text not null);
+create table name_pass(
+	name text not null,
+	pass text not null);
