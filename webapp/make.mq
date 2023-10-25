@@ -1,7 +1,10 @@
+drop table shift;
 create table shift (
+	id int auto_increment,index(id),
 	name text not null,
 	date text not null,
 	intime text not null,
 	outtime text not null,
-	comment text not null
+	comment text not null,
+	ena boolean
 	)

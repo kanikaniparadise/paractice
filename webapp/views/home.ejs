@@ -1,54 +1,56 @@
 <!DOCTYPE html>
 <html>
-<script>
+  <script>
+    var time=new Date()
 </script>
   <body>
+    <%- hoge %>
+
     <form action="/send_kinmu" method="POST">
       <h2>ユーザ名</h2>
-      <input type="text" name="username">
+      <input type="text" id="username"  name="username" value="nozomi">
       <h2>年/月/日</h2>
-      <input type="date" name="day">
+      <input type="date" id="date" name="day">
       <h2>出社時刻</h2>
-      <input type="time" name="start">
+      <input type="time" id="intime" name="start">
       <h2>退社時刻</h2>
-      <input type="time" name="fin">
+      <input type="time" id="outtime" name="fin">
       <h2>コメント</h2>
       <input type="text" name="coment">
       <button type="submit">投稿</button>
     </form>
     <form action="/delcookie" method="GET">
-    <button type="submit">ログアウト</button>
+      <button type="submit">ログアウト</button>
     </form>
     <h1 >---投稿履歴---</h1>
-    <table border="1"id="rireki">
-      <tr>
-	<th>名前</th>
-	<th>日付</th>
-	<th>出社時間</th>
-	<th>退社時間</th>
-	<th>コメント</th>
-      </tr>
+    <form action="/deldata" method="POST">
+      <table border="1" id="rireki">
+	<tr>
+	  <th>名前</th>
+	  <th>日付</th>
+	  <th>出社時間</th>
+	  <th>退社時間</th>
+	  <th>コメント</th>
+	</tr>
+      </table>
+    </form>
   </body>
   <script>
-    var show;
-  var xhr = new XMLHttpRequest();
+    var show;     //コンソールから数値を確認する用のグローバル変数
+    var xhr = new XMLHttpRequest();
     xhr.open("GET","/get_kinmu")
-    var out=[]
     xhr.send()
     xhr.addEventListener("load", function(){ // loadイベントを登録します。
 	console.log(this.response); // 通信結果を出力します。
 	console.log(JSON.parse(this.response).length)
 	var data=JSON.parse(this.response)
 	console.log("myname");
-	show=data
+	
 	let rirekistart = document.getElementById('rireki');
-	gyougoto = this.response.split("\n");
 	out = this.response;
 	var i = 0;
 	var datalist=["name","date","intime","outtime","comment"];
-	gyougoto.pop();
 	data.forEach(function(shift){
-	    show = shift
 	    var new_element = document.createElement("tr");
 	    datalist.forEach(function(value){
 		var valuele = document.createElement("td");
@@ -58,10 +60,33 @@
 		new_element.appendChild(valuele);
 		i++;
 	    })
+	    show = shift
+	    var valuele = document.createElement("td");
+	    var delbutton = document.createElement("button");
+	    var updatebutton = document.createElement("button");
+	    updatebutton.setAttribute("value",shift.id)
+	    updatebutton.textContent = "修正";
+	    updatebutton.setAttribute("name","updateno")
+	    delbutton.textContent = "削除";
+	    show=shift
+	    delbutton.setAttribute("value",shift.id)
+	    delbutton.setAttribute("name","delno")
+	    valuele.appendChild(delbutton)
+	    valuele.appendChild(updatebutton)
+	    new_element.appendChild(valuele)
 	    rirekistart.appendChild(new_element);
 	})
-
+	
     }, false);
+    setdate=document.getElementById("date")//各inputの初期値設定関係
+    setintime=document.getElementById("intime")
+    setouttime=document.getElementById("outtime")
+    setintime=document.getElementById("intime")
+    month = time.getMonth;
+    date=time.getDate
+    setdate.setAttribute("value",time.getFullYear()+"-"+("0"+(time.getMonth()+1)).slice(-2)+"-"+("0"+time.getDate()).slice(-2))
+    setintime.setAttribute("value",("0"+time.getHours()).slice(-2)+":"+("0"+time.getMinutes()).slice(-2))
+    setouttime.setAttribute("value",("0"+time.getHours()).slice(-2)+":"+("0"+time.getMinutes()).slice(-2))
     console.log ("hello")
   </script>
 </html>

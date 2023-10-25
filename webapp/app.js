@@ -1,4 +1,5 @@
 /* 1. expressモジュールをロードし、インスタンス化してappに代入。*/
+var hoge = "<p>hello</p>"
 var express = require("express");
 const crypto = require('crypto')//md5ハッシュ化の前提
 
@@ -28,8 +29,7 @@ con.connect(function (err) {
     console.log('Connected');
     const sql = 'select * from webapp.name_pass where name = "a"';
     con.query(sql, function (err, result, fields) {
-	if (err) {throw err;}	
-	console.log(result);
+	if (err) {throw err;}
     });
     
 });
@@ -45,8 +45,7 @@ function check_token (cookie){
     var sql = "select * from webapp.name_token where token = ?";
     return new Promise((resolve,reject)=>{
 	con.query(sql,token,function(err,result,fields){
-	    console.log("uni")
-	    if(result.length !=0){console.log("oook")
+	    if(result.length !=0){
 				  resolve(true)
 
 				 }
@@ -56,9 +55,7 @@ function check_token (cookie){
 	    }
 
 	})
-	return hantei
-    }
-		      )
+    })
 }
 
 //md5にハッシュ化する関数
@@ -114,9 +111,23 @@ app.get("/", async function(req, res, next){		//パスワード確認ページ�
 });
 app.get("/get_kinmu", async function(req, res, next){		//勤務表のデータを送る
     if(await check_token){
-	var sql ="select * from webapp.shift";
-	con.query(sql, function(err,result,fields){
-	    res.json(result);
+	var sql = "select name from webapp.name_token where token = ?"
+	console.log(req.cookies.token)
+	con.query(sql,req.cookies.token,function(err,result,fields){
+	    console.log(err)
+	    console.log("uni1")
+	    const today = new Date();
+	    const mon = today.getDate() - today.getDay();
+	    
+	    const sunday = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+mon;
+	    console.log("uni")
+	    console.log(sunday)
+	    var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
+	    con.query(sql,[sunday,result[0].name], function(err,result,fields){
+		//result.unshift(null)
+		console.log(result)
+		res.json(result);
+	    })
 	})
     }
 });
@@ -126,9 +137,9 @@ app.post("/", function(req, res, next){		//送られてきたパスワードと�
     con.query(sql,[req.body.name,to_md5(req.body.pass)], function (err, result, fields) {
 	console.log(err)
 	if (result.length!=0){
-	    const token = jwt.sign({ name: req.body.name}, 'my_secret', { expiresIn: '1h' });
+	    const token = jwt.sign({ name: req.body.name}, 'my_secret', {});
 	    var sql = "insert into webapp.name_token values(?,?)";
-	    con.query(sql,[req.body.name,token ],function(err,result,fields){console.log(err);console.log("カニ")})
+	    con.query(sql,[req.body.name,token ],function(err,result,fields){console.log(err);})
     	    res.cookie("token",token)			//cookieにtokenを渡す
 	    res.render("home",{});
 	}
@@ -148,15 +159,39 @@ app.get("/delcookie",(req,res)=>{
     res.clearCookie("token")
     res.send("<a href='../'>ログイン画面へ行く</a>")
 })
+
+//指定されたデータを削除する
+app.post("/deldata",async function(req,res){
+    if(await check_token(req.cookies)){
+	console.log(req.body)
+	if(req.body.updateno!=undefined){
+	    console.log("kani")
+	    
+	}
+	if(req.body.delno!=undefined){
+	    
+	    var sql = "update webapp.shift set ena=true where id = ?"
+	    con.query(sql,req.body.delno,function(err,result,fields){console.log(err);})
+	}
+    }
+    res.redirect("../")
+})
+
 app.post('/send_kinmu', async function(req, res){		//送られてきた勤務の情報をテキストに書き込み、リロードさせる
     if(await check_token(req.cookies)){
 	var form = req.body;
 	var output = [];
-	output  = [form.username,form.day,form.start,form.fin,form.coment]
-	var sql = "insert into webapp.shift values(?,?,?,?,?)"
-
-	con.query(sql,output,function(err,result,fields){})
-	res.render("home",{});
+	var sql="select count(name) from webapp.shift;"
+	con.query(sql,function(err,result,fields){
+	    console.log(result)
+	    output  = [0,form.username,form.day,form.start,form.fin,form.coment,0]
+	    sql = "insert into webapp.shift values(?,?,?,?,?,?,?)"
+	    console.log(form.day)
+	    con.query(sql,output,function(err,resu,fields){
+		console.log(err)
+	    })
+	    res.redirect("../");
+	})
     }
     else{
 	res.render("error",{});
@@ -166,8 +201,3 @@ app.use(function(req, res, next){
     res.status(404);
     res.render("error",{});
 })
-
-
-
-
-
