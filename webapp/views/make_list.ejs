@@ -1,0 +1,34 @@
+<html>
+  <% var datalist=["name","date","intime","outtime","comment"];
+     data.forEach(function(shift){ %>
+  
+  <tr>
+    <% if(change == shift.id){%>
+    <td>
+      <%- shift.name%>
+    </td>
+    <% datalist.shift(); datalist.forEach(function(value){ %>
+    <td>
+      <input name= <%- value%> type = "text" value = <%- shift[value] %>>
+    </td>
+    <% })%>
+       <button name = "changeno" value = <%- change%>> 確定
+       </button>
+
+
+
+       
+       <% datalist=["name","date","intime","outtime","comment"]}else{
+    datalist.forEach(function(value){%>
+    <td>
+      <%- shift[value] %>
+    </td>
+    <% })%>
+    <td>
+      <button name = "updateno" value = <%- shift.id %>>修正</button>
+      <button name = "delno" value = <%- shift.id %>>削除</button>
+    </td>
+    <% } %>
+  </tr>
+  <% })%>
+</html>

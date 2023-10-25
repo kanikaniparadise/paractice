@@ -1,0 +1,12 @@
+<html>
+<% var datalist=["name","date","intime","outtime","comment"];
+data.forEach(function(shift){
+<tr>
+	<% datalist.forEach(function(value){%>
+	<td>
+		<%- value %>
+	</td>
+	<% }) %>
+</tr>
+<% })%>
+</html>

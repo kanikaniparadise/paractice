@@ -93,14 +93,29 @@ app.post("/newaccount",function(req,res,next){
 var tokenok=0;
 // "/"へのGETリクエストでindex.ejsを表示する。トークンがあればそのトークンを確認、homeに遷移する
 app.get("/", async function(req, res, next){		//パスワード確認ページを表示する処理
+    
+    
+
     const cookies = req.cookies;
+    
+
+
     if(await check_token(cookies)){
+	console.log("ok")
+    	res.render("home", {});
+    }
+    else{
+	console.log("no")
+	res.render("index",{});
+    }
+});
+app.get("/get_kinmu", async function(req, res, next){		//勤務表のデータを送る
+    if(await check_token){
 	var sql = "select name from webapp.name_token where token = ?"
 	console.log(req.cookies.token)
-	con.query(sql,req.cookies.token,function(err,result_name,fields){
-	    var name = result_name[0].name;
+	con.query(sql,req.cookies.token,function(err,result,fields){
 	    console.log(err)
-	    console.log(name)
+	    console.log("uni1")
 	    const today = new Date();
 	    const mon = today.getDate() - today.getDay();
 	    
@@ -108,16 +123,13 @@ app.get("/", async function(req, res, next){		//パスワード確認ページ�
 	    console.log("uni")
 	    console.log(sunday)
 	    var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
-	    con.query(sql,[sunday,name], function(err,result,fields){
+	    con.query(sql,[sunday,result[0].name], function(err,result,fields){
 		//result.unshift(null)
-		res.render("home",{ data: result,name: name});
+		console.log(result)
+		res.json(result);
 	    })
 	})
     }
-
-    else{res.render("index",{})}
-});
-app.get("/get_kinmu", async function(req, res, next){		//勤務表のデータを送る
 });
 app.post("/", function(req, res, next){		//送られてきたパスワードとユーザ名を確かめる
     var sql = 'select * from webapp.name_pass where name = ? and pass = ?';
@@ -129,7 +141,7 @@ app.post("/", function(req, res, next){		//送られてきたパスワードと�
 	    var sql = "insert into webapp.name_token values(?,?)";
 	    con.query(sql,[req.body.name,token ],function(err,result,fields){console.log(err);})
     	    res.cookie("token",token)			//cookieにtokenを渡す
-	    res.redirect("../");
+	    res.render("home",{});
 	}
 	else{
 	    res.render("index",{})
@@ -153,43 +165,26 @@ app.post("/deldata",async function(req,res){
     if(await check_token(req.cookies)){
 	console.log(req.body)
 	if(req.body.updateno!=undefined){
-	    var sql = "select name from webapp.name_token where token = ?"
-	    console.log(req.cookies.token)
-	    con.query(sql,req.cookies.token,function(err,result_name,fields){
-		var name = result_name[0].name;
-		console.log(err)
-		console.log(name)
-		const today = new Date();
-		const mon = today.getDate() - today.getDay();
-		
-		const sunday = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+mon;
-		console.log("uni")
-		console.log(sunday)
-		var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
-		con.query(sql,[sunday,name], function(err,result,fields){
-		    //result.unshift(null)
-		    console.log("uuuni")
-		    res.render("home",{ data: result,name: name,change: req.body.updateno});
-		    
-		})
-	    })
-	    return 0;
+	    console.log("kani")
+	    
 	}
 	if(req.body.delno!=undefined){
+	    
 	    var sql = "update webapp.shift set ena=true where id = ?"
 	    con.query(sql,req.body.delno,function(err,result,fields){console.log(err);})
 	}
     }
     res.redirect("../")
 })
+
 app.post('/send_kinmu', async function(req, res){		//送られてきた勤務の情報をテキストに書き込み、リロードさせる
     if(await check_token(req.cookies)){
 	var form = req.body;
 	var output = [];
-	var sql="select name from webapp.name_token where token = ?;"
-	con.query(sql,req.cookies.token ,function(err,result,fields){
-	    console.log(err);
-	    output  = [0,result[0].name,form.day,form.start,form.fin,form.coment,0]
+	var sql="select count(name) from webapp.shift;"
+	con.query(sql,function(err,result,fields){
+	    console.log(result)
+	    output  = [0,form.username,form.day,form.start,form.fin,form.coment,0]
 	    sql = "insert into webapp.shift values(?,?,?,?,?,?,?)"
 	    console.log(form.day)
 	    con.query(sql,output,function(err,resu,fields){

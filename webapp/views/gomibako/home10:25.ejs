@@ -4,9 +4,11 @@
     var time=new Date()
 </script>
   <body>
+    <%- hoge %>
+
     <form action="/send_kinmu" method="POST">
       <h2>ユーザ名</h2>
-      <input type="text" id="username"  name="username" value=<%- name %> disabled>
+      <input type="text" id="username"  name="username" value="nozomi">
       <h2>年/月/日</h2>
       <input type="date" id="date" name="day">
       <h2>出社時刻</h2>
@@ -30,18 +32,11 @@
 	  <th>退社時間</th>
 	  <th>コメント</th>
 	</tr>
-	<% if(change != undefined){ %>
-	<%- include("./make_list.ejs",data)%><- "aaaa"%>
-	  <%}
-	    else{%>
-	  <%- include("./make_list.ejs",data,change); %><%}%>
-	
       </table>
     </form>
   </body>
   <script>
     var show;     //コンソールから数値を確認する用のグローバル変数
-    /*
     var xhr = new XMLHttpRequest();
     xhr.open("GET","/get_kinmu")
     xhr.send()
@@ -52,6 +47,7 @@
 	console.log("myname");
 	
 	let rirekistart = document.getElementById('rireki');
+	out = this.response;
 	var i = 0;
 	var datalist=["name","date","intime","outtime","comment"];
 	data.forEach(function(shift){
@@ -82,7 +78,6 @@
 	})
 	
     }, false);
-*/
     setdate=document.getElementById("date")//各inputの初期値設定関係
     setintime=document.getElementById("intime")
     setouttime=document.getElementById("outtime")
