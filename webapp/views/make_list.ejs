@@ -7,19 +7,24 @@
     <td>
       <%- shift.name%>
     </td>
-    <% datalist.shift(); datalist.forEach(function(value){ %>
+    <% datalist.shift();  %>
     <td>
-      <input name= <%- value%> type = "text" value = <%- shift[value] %>>
+      <input name= "date" type = "date" value = <%- shift.date %>>
     </td>
-    <% })%>
-       <button name = "changeno" value = <%- change%>> 確定
-       </button>
-
-
-
-       
-       <% datalist=["name","date","intime","outtime","comment"]}else{
-    datalist.forEach(function(value){%>
+    <td>
+      <input name= "intime" type = "time" value = <%- shift.intime %>>
+    </td>
+    <td>
+      <input name= "outtime" type = "time" value = <%- shift.outtime %>>
+    </td>
+    <td>
+      <input name= "comment" type = "text" value = <%- shift.comment %>>
+    </td>
+    <td><button name = "changeid" value = <%- change%>> 確定
+    </button></td>
+    <% datalist=["name","date","intime","outtime","comment"]}
+       else{
+       datalist.forEach(function(value){%>
     <td>
       <%- shift[value] %>
     </td>

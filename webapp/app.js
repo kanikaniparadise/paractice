@@ -38,7 +38,6 @@ function check_token (cookie){
     
     if (cookie.token==null){return false};
     token=cookie.token;
-    console.log(token);
     var token_value = jwt.verify(token, 'my_secret');
     var hantei = "kai"
     var text = fs.readFileSync("./name_token.txt","utf-8");
@@ -110,14 +109,12 @@ app.get("/", async function(req, res, next){		//パスワード確認ページ�
 	    var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
 	    con.query(sql,[sunday,name], function(err,result,fields){
 		//result.unshift(null)
-		res.render("home",{ data: result,name: name});
+		res.render("home",{ data: result,name: name,change: undefined});
 	    })
 	})
     }
 
     else{res.render("index",{})}
-});
-app.get("/get_kinmu", async function(req, res, next){		//勤務表のデータを送る
 });
 app.post("/", function(req, res, next){		//送られてきたパスワードとユーザ名を確かめる
     var sql = 'select * from webapp.name_pass where name = ? and pass = ?';
@@ -163,23 +160,28 @@ app.post("/deldata",async function(req,res){
 		const mon = today.getDate() - today.getDay();
 		
 		const sunday = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+mon;
-		console.log("uni")
 		console.log(sunday)
 		var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
 		con.query(sql,[sunday,name], function(err,result,fields){
 		    //result.unshift(null)
-		    console.log("uuuni")
 		    res.render("home",{ data: result,name: name,change: req.body.updateno});
 		    
 		})
 	    })
 	    return 0;
 	}
+	if(req.body.changeid!=undefined){
+	    var sql = "update webapp.shift set date = ?,intime = ?,outtime = ?,comment = ? where id = ?"
+	    var datas= [req.body.date,req.body.intime,req.body.outtime,req.body.comment,req.body.changeid]
+	    con.query(sql,datas,function(err,result,fields){console.log(datas)})
+	}
+	console.log(req.body)
 	if(req.body.delno!=undefined){
 	    var sql = "update webapp.shift set ena=true where id = ?"
 	    con.query(sql,req.body.delno,function(err,result,fields){console.log(err);})
 	}
     }
+    
     res.redirect("../")
 })
 app.post('/send_kinmu', async function(req, res){		//送られてきた勤務の情報をテキストに書き込み、リロードさせる
@@ -202,6 +204,7 @@ app.post('/send_kinmu', async function(req, res){		//送られてきた勤務の
 	res.render("error",{});
     }  
 })
+
 app.use(function(req, res, next){
     res.status(404);
     res.render("error",{});
