@@ -2,7 +2,7 @@
 <html>
   <script>
     var time=new Date()
-</script>
+  </script>
   <body>
     <form action="/send_kinmu" method="POST">
       <h2>ユーザ名</h2>
@@ -32,10 +32,10 @@
 	</tr>
 	<% if(change != undefined){ %>
 	<%- include("./make_list.ejs",data)%>
-	  <%}
+	<%}
 	    else{%>
 	  <%- include("./make_list.ejs",data,change); %><%}%>
-	
+	  
       </table>
     </form>
   </body>

@@ -101,14 +101,16 @@ app.get("/", async function(req, res, next){		//パスワード確認ページ�
 	    console.log(err)
 	    console.log(name)
 	    const today = new Date();
-	    const mon = today.getDate() - today.getDay();
+	    const mon = ("0"+(today.getDate() - today.getDay())).slice(-2);
 	    
-	    const sunday = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+mon;
+	    const sunday = today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2)+"-"+mon;
 	    console.log("uni")
 	    console.log(sunday)
 	    var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
 	    con.query(sql,[sunday,name], function(err,result,fields){
 		//result.unshift(null)
+		console.log(err)
+		console.log(result)
 		res.render("home",{ data: result,name: name,change: undefined});
 	    })
 	})
@@ -157,9 +159,9 @@ app.post("/deldata",async function(req,res){
 		console.log(err)
 		console.log(name)
 		const today = new Date();
-		const mon = today.getDate() - today.getDay();
-		
-		const sunday = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+mon;
+		const mon = ("0"+(today.getDate() - today.getDay())).slice(-2);
+
+		const sunday = today.getFullYear()+"-"+("0"+(today.getMonth()+1)).slice(-2)+"-"+mon;
 		console.log(sunday)
 		var sql ="select * from webapp.shift where ena = 0 and date>? order by date asc , case name when ? then 1 else 2 end , name asc";
 		con.query(sql,[sunday,name], function(err,result,fields){
