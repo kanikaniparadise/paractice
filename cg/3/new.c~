@@ -1,0 +1,11 @@
+#include <stdio.h>
+int main(){
+  FILE *fp;
+  char i[50];
+  char fname[]="piramid.obj";
+  fp = fopen(fname,"r");
+  fscanf(fp,"%s",i);
+  printf("%s\n",i);
+  printf("aaa");
+  fclose(fp);
+}

@@ -1,0 +1,108 @@
+#include <GL/glut.h>
+#define W 6                        /* 地面の幅の２分の１　 */
+#define D 9                        /* 地面の長さの２分の１ */
+GLdouble vertex[][3] = {
+  { -1.0, -1.0, -1.0 },
+  { 1.0, -1.0, -1.0 },
+  { 1.0, 1.0, -1.0 },
+  { -1.0, 1.0, -1.0 },
+  { -1.0, -1.0, 1.0 },
+  { 1.0, -1.0, 1.0 },
+  { 1.0, 1.0, 1.0 },
+  { -1.0, 1.0, 1.0 }
+};
+
+int edge[][2] = {
+  { 0, 1 },
+  { 1, 2 },
+  { 2, 3 },
+  { 3, 0 },
+  { 4, 5 },
+  { 5, 6 },
+  { 6, 7 },
+  { 7, 4 },
+  { 0, 4 },
+  { 1, 5 },
+  { 2, 6 },
+  { 3, 7 }
+};
+
+static void myGround(double height)
+{
+  const static GLfloat ground[][4] = {
+    { 0.6, 0.6, 0.6, 1.0 },
+    { 0.3, 0.3, 0.3, 1.0 }
+  };
+
+  int i, j;
+
+  glBegin(GL_QUADS);
+  glNormal3d(0.0, 1.0, 0.0);
+  for (j = -D; j < D; ++j) {
+    for (i = -W; i < W; ++i) {
+      glMaterialfv(GL_FRONT, GL_DIFFUSE, ground[(i + j) & 1]);
+      glVertex3d((GLdouble)i, height, (GLdouble)j);
+      glVertex3d((GLdouble)i, height, (GLdouble)(j + 1));
+      glVertex3d((GLdouble)(i + 1), height, (GLdouble)(j + 1));
+      glVertex3d((GLdouble)(i + 1), height, (GLdouble)j);
+    }
+  }
+  glEnd();
+}
+static void display(void)
+{
+  const static GLfloat lightpos[] = { 3.0, 4.0, 5.0, 1.0 }; /* 光源の位置 */
+  const static GLfloat yellow[] = { 0.8, 0.8, 0.2, 1.0 };   /* 車の色　　 */
+  static GLdouble px = 0.0, pz = 0.0;                       /* 車の位置　 */
+  static GLdouble r = 0.0;                                  /* 車の方向　 */
+
+  /* 画面クリア */
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  /* モデルビュー変換行列の初期化 */
+  glLoadIdentity();
+
+  /* 光源の位置を設定 */
+  glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+
+  /* 視点の移動（物体の方を奥に移す）*/
+  glTranslated(0.0, 0.0, -25.0);
+  glRotated(30.0, 1.0, 0.0, 0.0);
+
+  /* シーンの描画 */
+  myGround(0.0);
+  glPushMatrix();
+  glTranslated(px, 1.0, pz);
+  glRotated(r - 90.0, 0.0, 1.0, 0.0);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+  glutSolidTeapot(1.0);
+  glPopMatrix();
+
+  glFlush();
+}
+void resize(int w, int h)
+{
+  glViewport(0, 0, w, h);
+
+  glLoadIdentity();
+  gluPerspective(30.0, (double)w / (double)h, 1.0, 100.0);
+  glTranslated(0.0, 0.0, -5.0);
+  
+  gluLookAt(4.0, 4.0, -4.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+}
+void init(void)
+{
+  glClearColor(1.0, 1.0, 1.0, 1.0);
+}
+
+int main(int argc, char *argv[])
+{
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGBA);
+  glutCreateWindow(argv[0]);
+  glutDisplayFunc(display);
+  glutReshapeFunc(resize);
+  init();
+  glutMainLoop();
+  return 0;
+}

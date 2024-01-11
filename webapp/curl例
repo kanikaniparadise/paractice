@@ -1,2 +1,2 @@
 curl -X POST -d "username=nozomi&userpass=nozo" -c cookie.txt http://localhost:3000/
-
+curl -X POST -b cookie.txt -d "name=a" -d "day=2025-04-02 " -d "start=12:12" -d "fin=22:22" -d "coment=hello" https://www.kaniuni.net/send_kinmu

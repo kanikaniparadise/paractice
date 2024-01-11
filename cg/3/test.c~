@@ -1,0 +1,9 @@
+typedef struct {
+    float *vertices;
+    int num_vertices;
+} model;
+
+model vertices;
+model uvs;
+model normals;
+void load_obj("piramid.obj",vertices,uvs,normals);
