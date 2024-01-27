@@ -1,0 +1,18 @@
+file = File.open("bunny.ply", "r")
+datas = file.read().split("\n")
+number=0
+i=0
+numofv=0
+numoff=0
+while(numofv==0 || numoff==0)do
+
+  if(datas[i].include?("vertex")) then
+    numofv = datas[i]
+  elsif(datas[i].include?("face")
+  else
+    i=i+1
+  end
+end
+puts(datas[i])
+puts(datas[i].delete("^0-9").to_i)
+

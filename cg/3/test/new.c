@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <GL/glut.h>
-double point[100][3];
-int line[10][3];
+double point[35947][3];
+int line[69451][3];
 #define W 6                        /* 地面の幅の２分の１　 */
 #define D 9                        /* 地面の長さの２分の１ */
 static void myGround(double height)
@@ -31,14 +31,12 @@ static void myGround(double height)
 
 double point2[][3]={
   {0,0,0},
-  {-1,-1,-1},
-  {1,-1,-1},
-  {1,-1,1},
-  {-1,-1,1},
-  {0,0,0}
+  {2,0,0},
+  {2,0,2},
+  {0,0,2},
+  {1,2,1}
 };
 int line2[][3]={
-  {0,0,0},
   {1,2,5},
   {2,3,5},
   {3,4,5},
@@ -60,6 +58,8 @@ GLfloat red[] = { 0.8, 0.2, 0.2, 1.0 };
 
 void display(void)
 {
+  int numofv=0;
+  int numoff=0;
   const static GLfloat lightpos[] = { 3.0, 4.0, 5.0, 1.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
@@ -84,6 +84,7 @@ void display(void)
 
 
 	  if(strcmp(hed,"v")==0){
+	    numofv++;
 	    int i;
 	    printf("b");
 	    for(i=0;i<3;i++){
@@ -95,7 +96,7 @@ void display(void)
 	  }
 	  else{
 	    if(strcmp(hed,"f")==0){
-	      
+	      numoff++;
 	      int i;
 	      for(i=0;i<3;i++){
 		fscanf(fp,"%d",&num);
@@ -116,7 +117,7 @@ void display(void)
 	printf("\n%f",point[i][1]);
 	printf("\n%f",point[i][2]);
 	}
-	for(i=0;i<6;i++){
+	for(i=0;i<10;i++){
 	  printf("\n%d",line[i][0]);
 	  printf("\n%d",line[i][1]);
 	  printf("\n%d",line[i][2]);
@@ -125,16 +126,19 @@ void display(void)
   //  printf("%d\n",line);
 
   glClear(GL_COLOR_BUFFER_BIT);
-  myGround(0.0);
+  //myGround(0.0);
   /* 図形の描画 */
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
   glColor3d(0.0, 0.0, 0.0);
-  glBegin(GL_TRIANGLE_STRIP);
-  for (i = 0; i < 6; ++i) {
-    glNormal3dv(normal[i]);
-    glVertex3dv(point[line[i][0]]+1);
-    glVertex3dv(point[line[i][1]]+1);
-    glVertex3dv(point[line[i][2]]+1);
+  glBegin(GL_TRIANGLES);
+  for (i = 0; i < numoff; ++i) {
+
+  glVertex3dv(point[line[i][0]-1]);
+  printf("%f",  *point2[line2[i][0]-1]);
+  glVertex3dv(point[line[i][1]-1]);
+    printf("%f",  *point2[line2[i][1]-1]);
+  glVertex3dv(point[line[i][2]-1]);
+    printf("%f\n",  *point2[line2[i][2]]-1);
   }
   glEnd();
 
