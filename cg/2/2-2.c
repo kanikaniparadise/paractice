@@ -35,11 +35,9 @@ void resize(int w, int h)
 }
 void init(void)
 {
-  glClearColor(1.0, 1.0, 1.0, 1.0);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
     glEnable(GL_DEPTH_TEST);
   glDisable(GL_CULL_FACE);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
 }
 
 int main(int argc, char *argv[])

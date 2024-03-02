@@ -1,0 +1,20 @@
+#include <stdio.h>
+int main(){
+  
+void bectgaiseki(double *a,double *b,double *ans ){
+  int longer;
+  longer=(bectlong(a));
+  ans[0]=(a[1] * b[2])-(a[2] * b[1]);
+  ans[1]=(a[2] * b[0])-(a[0] * b[2]);
+  ans[2]=(a[0] * b[1])-(a[1] * b[0]);
+}
+ double a[3]={1,1,1};
+ double b[3]={1,1,1};
+ double c[3];
+ bectgaiseki(a,b,c);
+ for(int i;i<3;i++){
+   printf("%f\n",c[i]);
+ }
+   
+   
+}

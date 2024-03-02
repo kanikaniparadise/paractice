@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 
-/*
- * 画面表示
- */
+
 static void display(void)
 {
   /* 画面クリア */
